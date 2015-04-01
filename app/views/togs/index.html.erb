@@ -1,0 +1,49 @@
+<style>
+		.cool {
+			width: 100%;
+			height: 800px;
+		}
+
+		#map {
+			width: 100%;
+			height: 800px;
+		}
+
+</style>
+
+<h1>IMAGEBRIEF INSTAGRAM FOLLOWING ON INSTAGRAM:  <%= @follows.count %> </h1> 
+	
+	<div class="cool">
+	  <div id="map"></div>
+	</div>
+
+  <% for follow in @follows %>
+    <% media = Instagram.user_recent_media(follow.id) %>
+    <a href='https://instagram.com/#{follow.username}'/>
+      <div style='margin: 5px; padding: 5px; display: inline-block'>
+	      <% if media.first.location %>
+	    		<span><%= media.first.location.longitude %></span>
+	      	<span><%= media.first.location.latitude %></span>
+	    	<% end %>
+	      <p><%= follow.full_name %></p>
+	      <img src='<%= follow.profile_picture %>'>
+     	</div>
+     </a>
+   <% end %>
+
+
+
+
+<script src="//maps.google.com/maps/api/js?v=3.13&amp;sensor=false&amp;libraries=geometry" type="text/javascript"></script>
+<script src='//google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.14/src/markerclusterer_packed.js' type='text/javascript'></script>
+
+   <script>
+   	handler = Gmaps.build('Google');
+		handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
+			markers = handler.addMarkers(<%=raw @hash.to_json %>);
+		  handler.bounds.extendWith(markers);
+		  handler.fitMapToBounds();
+		  markers = handler.addMarkers(<%=raw @hash.to_json %>);
+   		console.log(markers);
+		});
+   </script>
